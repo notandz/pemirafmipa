@@ -42,12 +42,17 @@ class PilihanController extends Controller
     public function showPilihHima()
     {
         $user = session('user'); // Ambil data user dari session
-        
-        // Ambil HIMA yang sesuai dengan prodi pengguna (misalnya, Informatika)
-        $pilihan_himas = PilihanHima::where('prodi', $user->prodi)->get(); // Menyaring HIMA berdasarkan prodi
-
+    
+        // Pastikan data user valid dan memiliki prodi
+        if (!$user || !isset($user->prodi)) {
+            return redirect()->back()->withErrors('Data user atau prodi tidak ditemukan.');
+        }
+    
+        // Ambil HIMA yang sesuai dengan prodi pengguna
+        $pilihan_himas = PilihanHima::where('prodi', $user->prodi)->get();
+    
         return view('pilih_hima', compact('user', 'pilihan_himas'));
-    }
+    }    
 
     // Menangani pilihan HIMA
     public function updatePilihanHima(Request $request)
